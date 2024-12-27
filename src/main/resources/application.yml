@@ -1,0 +1,28 @@
+server:
+  port: 8080
+  code: 1000
+
+spring:
+    application:
+      name: cy-store
+    datasource:
+      druid:
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        url: jdbc:mysql://localhost:3306/imooc_new?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
+        username: root
+        password: a123321520
+
+mybatis-plus:
+  configuration:
+    # 开启sql日志
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    # 该配置就是将带有下划线的表字段映射为驼峰格式的实体类属性
+    map-underscore-to-camel-case: true
+
+student:
+  name: "张三"
+  age: 18
+  hobby:
+    - "篮球"
+    - "足球"
+    - "乒乓球"
