@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.imooc.first.domain.mapper.StudentCourseMapper">
+
+    <!-- 查询学生的课程列表 -->
+    <select id="getCoursesByStudentId" resultType="com.imooc.first.domain.dto.StudentCourseDto">
+        SELECT c.id AS courseId, c.name AS courseName
+        FROM student_course sc
+        JOIN course c ON sc.course_id = c.id
+        WHERE sc.student_id = #{studentId}
+    </select>
+
+</mapper>
