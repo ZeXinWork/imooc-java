@@ -5,10 +5,66 @@
 
     <!-- 查询学生的课程列表 -->
     <select id="getCoursesByStudentId" resultType="com.imooc.first.domain.dto.StudentCourseDto">
-        SELECT c.id AS courseId, c.name AS courseName
-        FROM student_course sc
-        JOIN course c ON sc.course_id = c.id
-        WHERE sc.student_id = #{studentId}
+        SELECT
+        sc.course_id AS courseId,          <!-- 获取课程ID -->
+        sc.id AS id,                        <!-- 获取student_course表中的id -->
+        course.course_name AS courseName   <!-- 获取课程名称 -->
+        FROM
+        student_course sc
+        JOIN
+        course ON course.id = sc.course_id  <!-- 使用course_id进行关联 -->
+        WHERE
+        sc.student_id = #{studentId}        <!-- 使用student_id过滤特定学生的课程 -->
     </select>
 
+<!--    查询该课程有多少学生报名-->
+    <select id="getStudentByCourseId" resultType="com.imooc.first.domain.entity.Student">
+        SELECT sc.student_id    AS Id,
+               stu.name         AS name,
+               stu.age          AS age,
+               stu.phone_number AS phoneNumber
+        from student_course sc
+                 join student stu
+                      ON stu.id = sc.student_id
+        where sc.course_id = #{courseId}
+
+    </select>
+
+    <!--    统计每个学生有多少个课程，没有就为0-->
+    <select id="getStudentCourseNumber" resultType="com.imooc.first.domain.dto.StudentCourseNumberDto">
+        select stu.id              AS id,
+               stu.name            AS name,
+               COUNT(sc.course_id) AS courseNumber
+        from student stu
+                 left join student_course sc on stu.id = sc.student_id
+        GROUP BY stu.id, stu.name
+    </select>
+
+
+    <resultMap id="CourseStudentListResultMap" type="com.imooc.first.domain.dto.CourseStudentListDto">
+        <!-- 映射课程的字段 -->
+        <result property="courseId" column="courseId"/>
+        <result property="courseName" column="courseName"/>
+
+        <!-- 使用 collection 映射学生列表 -->
+        <collection property="studentList" ofType="com.imooc.first.domain.entity.Student">
+            <result property="id" column="studentId"/>
+            <result property="name" column="studentName"/>
+            <result property="age" column="studentAge"/>
+            <result property="phoneNumber" column="studentPhoneNumber"/>
+        </collection>
+    </resultMap>
+
+<!--    获取每个课程的学生报名列表-->
+    <select id="getCourseStudentList" resultMap="CourseStudentListResultMap">
+        SELECT c.id           AS courseId,
+               c.name         AS courseName,
+               s.id           AS studentId,
+               s.name         AS studentName,
+               s.age          AS studentAge,
+               s.phone_number AS studentPhoneNumber
+        FROM course c
+                 LEFT JOIN student_course sc ON c.id = sc.course_id
+                 LEFT JOIN student s ON sc.student_id = s.id
+    </select>
 </mapper>
