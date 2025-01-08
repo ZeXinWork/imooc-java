@@ -64,8 +64,17 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         return loginSuccessDto;
     }
 
+    @Override
+    public User getUser(String name) {
+        return this.getSame(name);
+    }
+
 
     public User getSame(String name) {
-        return this.getOne(new LambdaQueryWrapper<User>().eq(User::getUsername, name));
+        User existingUser = this.getOne(new LambdaQueryWrapper<User>().eq(User::getUsername, name));
+        if (existingUser != null) {
+            existingUser.setPassword(null);
+        }
+        return existingUser;
     }
 }

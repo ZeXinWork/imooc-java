@@ -14,6 +14,9 @@ public enum ImoocMallExceptionEnum {
     UPDATE_FAILED(10008, "更新失败"),
     NEED_ADMIN(10009, "无管理员权限"),
     USER_NOT_EXISTED(10010, "账号不存在"),
+    USER_NOT_FIND(10011, "用户不存在"),
+    USER_NOT_LOGIN(10012, "用户未登录"),
+    TOKEN_EXPIRED(10013, "登录状态过期"),
 
     SYSTEM_ERROR(20000, "系统异常");
     /**

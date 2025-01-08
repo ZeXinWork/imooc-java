@@ -9,10 +9,8 @@ import com.imooc.first.domain.exception.ImoocMallException;
 import com.imooc.first.domain.exception.ImoocMallExceptionEnum;
 import com.imooc.first.domain.service.UserService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.parameters.P;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.lang.model.element.VariableElement;
@@ -66,5 +64,14 @@ public class UserController {
 
         // 正常返回登录成功的响应
         return ApiRestResponse.success(loginSuccessDto);
+    }
+
+    @GetMapping("/detail")
+    public ApiRestResponse<User> getUser(@RequestParam("name") String name) {
+        User user = userService.getUser(name);
+        if (user != null) {
+            return ApiRestResponse.success(user);
+        }
+        return ApiRestResponse.error(ImoocMallExceptionEnum.USER_NOT_FIND);
     }
 }

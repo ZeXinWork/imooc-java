@@ -1,6 +1,5 @@
 package com.imooc.first.domain.exception;
 
-
 import com.imooc.first.domain.common.ApiRestResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,7 +8,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
- * 描述：     处理统一异常的handler
+ * 描述： 处理统一异常的handler
  */
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -19,14 +18,15 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     @ResponseBody
     public Object handleException(Exception e) {
-        log.error("Default Exception: ", e);
-        return ApiRestResponse.error(ImoocMallExceptionEnum.SYSTEM_ERROR);
+        log.error("系统异常: ", e);
+        return ApiRestResponse.error(500, "系统异常，请稍后重试");
     }
 
     @ExceptionHandler(ImoocMallException.class)
     @ResponseBody
     public Object handleImoocMallException(ImoocMallException e) {
-        log.error("ImoocMallException: ", e);
+        log.error("业务异常: ", e);
+        // 捕获 ImoocMallException 并返回具体的错误信息和状态码
         return ApiRestResponse.error(e.getCode(), e.getMessage());
     }
 }

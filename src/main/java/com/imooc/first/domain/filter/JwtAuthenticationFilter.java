@@ -1,6 +1,9 @@
 package com.imooc.first.domain.filter;
 
+import com.imooc.first.domain.exception.ImoocMallException;
+import com.imooc.first.domain.exception.ImoocMallExceptionEnum;
 import com.imooc.first.domain.utils.JwtUtils;
+import com.sun.javafx.binding.Logging;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -28,8 +31,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             if (username != null && jwtUtils.validateToken(token, username)) {
                 // 如果 token 合法，设置 SecurityContext
                 SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(username, null, new ArrayList<>()));
+            } else {
+                throw new ImoocMallException(ImoocMallExceptionEnum.TOKEN_EXPIRED);
             }
         }
+
+        if (token == null) {
+            throw new ImoocMallException(ImoocMallExceptionEnum.USER_NOT_LOGIN);
+        }
+
         filterChain.doFilter(request, response);
     }
 }
