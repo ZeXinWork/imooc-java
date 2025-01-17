@@ -15,11 +15,11 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .csrf().disable()  // 禁用 CSRF
+        http.csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/api/user/login", "/api/user/register").permitAll()  // 登录和注册接口允许匿名访问
-                .anyRequest().authenticated()  // 其他请求需要认证
+                .antMatchers(HttpMethod.OPTIONS).permitAll()  // 允许所有 OPTIONS 请求（跨域预检请求）
+                .antMatchers("/api/user/login", "/api/user/register").permitAll()  // 登录和注册接口开放
+                .anyRequest().authenticated()  // 其他请求都需要认证
                 .and()
                 .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);  // 在 UsernamePasswordAuthenticationFilter 之前添加 JwtAuthenticationFilter
 

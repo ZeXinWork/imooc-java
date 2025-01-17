@@ -49,6 +49,7 @@ public class UserController {
 
     @PostMapping("/login")
     public ApiRestResponse<LoginSuccessDto> login(@RequestBody User user) {
+        log.info("{登录}");
         LoginSuccessDto loginSuccessDto = null;
         try {
             loginSuccessDto = userService.login(user); // 调用业务层登录方法

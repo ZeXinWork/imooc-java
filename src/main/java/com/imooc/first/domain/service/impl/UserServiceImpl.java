@@ -11,10 +11,12 @@ import com.imooc.first.domain.mapper.UserMapper;
 import com.imooc.first.domain.service.UserService;
 import com.imooc.first.domain.utils.JwtUtils;
 import com.imooc.first.domain.utils.PasswordUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
+@Slf4j
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
 
     @Autowired
@@ -48,8 +50,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         if (existingUser == null) {
             throw new ImoocMallException(ImoocMallExceptionEnum.USER_NOT_EXISTED);
         }
+        System.out.println("password:" + existingUser);
         boolean result = passwordUtils.verifyPassword(user.getPassword(), existingUser.getPassword());
-
         if (!result) {
             throw new ImoocMallException(ImoocMallExceptionEnum.WRONG_PASSWORD);
         }
@@ -72,9 +74,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     public User getSame(String name) {
         User existingUser = this.getOne(new LambdaQueryWrapper<User>().eq(User::getUsername, name));
-        if (existingUser != null) {
-            existingUser.setPassword(null);
-        }
+//        if (existingUser != null) {
+//            existingUser.setPassword(null);
+//        }
         return existingUser;
     }
 }
