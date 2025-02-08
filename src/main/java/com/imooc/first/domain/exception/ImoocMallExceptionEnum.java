@@ -18,7 +18,14 @@ public enum ImoocMallExceptionEnum {
     USER_NOT_LOGIN(10012, "用户未登录"),
     TOKEN_EXPIRED(10013, "登录状态过期"),
 
-    SYSTEM_ERROR(20000, "系统异常");
+    UNAUTHORIZED(401, "用户未登录"),
+
+    SYSTEM_ERROR(20000, "系统异常"),
+    VERIFICATION_CODE_EXPIRED(10014, "验证码过期"),
+    VERIFICATION_CODE_ERROR(10015, "验证码错误");
+//    VERIFICATION_CODE_ERROR(10014, "验证码过期");
+
+
     /**
      * 异常码
      */

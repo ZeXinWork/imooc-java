@@ -29,4 +29,6 @@ public class User {
 
     private LocalDateTime updateTime; // 更新时间，自动更新为当前时间
 
+    private String email; //邮箱
+
 }

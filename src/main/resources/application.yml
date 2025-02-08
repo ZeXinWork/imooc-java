@@ -2,6 +2,8 @@ server:
   port: 8081
   code: 1000
 
+
+
 spring:
     datasource:
       druid:
@@ -9,6 +11,28 @@ spring:
         url: jdbc:mysql://localhost:3306/imooc_new?serverTimezone=GMT%2B8&useUnicode=true&characterEncoding=UTF-8
         username: root
         password: a123321520
+    redis:
+      host: 127.0.0.1
+      database: 8
+      port: 6379
+    mail:
+      host: smtp.qq.com
+      port: 465
+      username: 3518678276@qq.com
+      password: qtdxggqqizccdbfa
+      protocol: smtps
+      properties:
+        mail:
+          smtp:
+            auth: true
+            ssl:
+              enable: true
+            timeout: 25000
+    rabbitmq:
+      host: localhost
+      port: 5672
+      username: guest
+      password: guest
 
 mybatis-plus:
   configuration:

@@ -12,4 +12,10 @@ public interface UserService extends IService<User> {
     LoginSuccessDto login(User user) throws ImoocMallException;
 
     User getUser(String name);
+
+    User getUserByEmail(String email);
+
+    User getUserInfo();
+
+    Boolean logout();
 }

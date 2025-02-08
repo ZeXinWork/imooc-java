@@ -7,13 +7,16 @@ import com.imooc.first.domain.dto.LoginSuccessDto;
 import com.imooc.first.domain.entity.User;
 import com.imooc.first.domain.exception.ImoocMallException;
 import com.imooc.first.domain.exception.ImoocMallExceptionEnum;
+import com.imooc.first.domain.request.EmailLogin;
+import com.imooc.first.domain.request.GetCaptcha;
+import com.imooc.first.domain.service.EmailSender;
+import com.imooc.first.domain.service.EmailService;
 import com.imooc.first.domain.service.UserService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.parameters.P;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import javax.lang.model.element.VariableElement;
 
 @RestController
 @Slf4j
@@ -21,6 +24,13 @@ import javax.lang.model.element.VariableElement;
 public class UserController {
     @Resource
     UserService userService;
+
+    @Autowired
+    EmailService emailService;
+
+
+    @Autowired
+    private EmailSender emailSender;
 
 
     @PostMapping("/register")
@@ -74,5 +84,36 @@ public class UserController {
             return ApiRestResponse.success(user);
         }
         return ApiRestResponse.error(ImoocMallExceptionEnum.USER_NOT_FIND);
+    }
+
+    /**
+     * 获取用户信息
+     *
+     * @return
+     */
+    @GetMapping("/info")
+    public ApiRestResponse<User> getUserInfo() {
+        return ApiRestResponse.success(userService.getUserInfo());
+    }
+
+    /**
+     * 退出登录
+     *
+     * @return
+     */
+    @PostMapping("/logout")
+    public ApiRestResponse<Boolean> logout() {
+        return ApiRestResponse.success(userService.logout());
+    }
+
+    @GetMapping("/captcha")
+    public ApiRestResponse<Boolean> loginEmail(GetCaptcha emailLogin) {
+        emailSender.sendEmail(emailLogin.getEmail());
+        return ApiRestResponse.success();
+    }
+
+    @PostMapping("/email")
+    public ApiRestResponse<LoginSuccessDto> emailLogin(@RequestBody EmailLogin emailLogin) {
+        return ApiRestResponse.success(emailService.loginEmail(emailLogin));
     }
 }

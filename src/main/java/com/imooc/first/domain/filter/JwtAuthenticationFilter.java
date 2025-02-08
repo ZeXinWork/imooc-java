@@ -1,9 +1,10 @@
 package com.imooc.first.domain.filter;
 
-import com.imooc.first.domain.exception.ImoocMallException;
+import com.imooc.first.domain.common.ApiRestResponse;
 import com.imooc.first.domain.exception.ImoocMallExceptionEnum;
 import com.imooc.first.domain.utils.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -14,6 +15,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
@@ -39,22 +45,38 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 // 如果 token 合法，设置 SecurityContext
                 SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(username, null, new ArrayList<>()));
             } else {
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                response.getWriter().write("Token is expired or invalid");
+                sendErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED, "Token is expired or invalid");
                 return;  // 结束请求处理
             }
         } else {
             // Token 为空时，只有在需要认证的接口才抛出未登录错误
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getWriter().write("User not logged in");
+            sendErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED, "User not logged in");
             return;
         }
 
         filterChain.doFilter(request, response);
     }
 
+    private static final Set<String> PUBLIC_URLS = new HashSet<>(Arrays.asList(
+            "/api/user/login",
+            "/api/user/register",
+            "/api/user/captcha",
+            "/api/user/email"
+    ));
+
     // 判断 URL 是否是需要认证的 URL
     private boolean isPublicUrl(String uri) {
-        return uri.equals("/api/user/login") || uri.equals("/api/user/register");
+        return PUBLIC_URLS.contains(uri);
+    }
+
+    // 发送自定义错误响应
+    private void sendErrorResponse(HttpServletResponse response, int statusCode, String message) throws IOException {
+        ApiRestResponse<Object> apiRestResponse = ApiRestResponse.error(ImoocMallExceptionEnum.UNAUTHORIZED);  // 使用自定义异常枚举
+        apiRestResponse.setStatus(statusCode);
+        apiRestResponse.setMsg(message);
+
+        response.setStatus(statusCode);
+        response.setContentType("application/json");
+        response.getWriter().write(new ObjectMapper().writeValueAsString(apiRestResponse));
     }
 }

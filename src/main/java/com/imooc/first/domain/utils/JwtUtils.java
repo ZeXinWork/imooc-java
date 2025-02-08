@@ -12,14 +12,14 @@ public class JwtUtils {
 
     // 设置秘钥
     private static final String SECRET_KEY = "imooc_security";  // 这里可以从配置文件中获取秘钥
-    private static final long EXPIRATION_TIME = 86400000; // 1天的过期时间
+  // 1天的过期时间
 
     // 生成JWT
     public String generateToken(String username) {
         return Jwts.builder()
                 .setSubject(username)  // 设置JWT的主题，一般是用户名
                 .setIssuedAt(new Date())  // 设置生成时间
-                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))  // 设置过期时间
+                .setExpiration(new Date(System.currentTimeMillis() + Constants.TOKEN_EXPIRATION_TIME))  // 设置过期时间
                 .signWith(SignatureAlgorithm.HS256, SECRET_KEY)  // 使用HS256算法和秘钥进行签名
                 .compact();  // 生成token
     }
